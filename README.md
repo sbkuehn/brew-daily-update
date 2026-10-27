@@ -1,4 +1,4 @@
-# brew-daily-update
+# Brew Daily Update (using Homebrew)
 
 Shannon Eldridge-Kuehn · October 27, 2026
 
