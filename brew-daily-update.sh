@@ -13,6 +13,7 @@
 #   brew-daily-update --status   # show last run and log location
 #
 # Author: Shannon Eldridge-Kuehn
+# Date: 10/27/2026
 
 set -uo pipefail
 
