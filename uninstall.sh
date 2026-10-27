@@ -3,6 +3,7 @@
 # uninstall.sh: removes brew-daily-update and its launchd agent.
 # Pass --purge to also delete logs, config, state, and the Brewfile backup.
 # Author: Shannon Eldridge-Kuehn
+# Date: October 27, 2026
 
 set -uo pipefail
 
