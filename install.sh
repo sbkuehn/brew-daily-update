@@ -2,6 +2,7 @@
 #
 # install.sh: installs brew-daily-update and schedules it with launchd.
 # Author: Shannon Eldridge-Kuehn
+# Date: October 27, 2026
 
 set -euo pipefail
 
