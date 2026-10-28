@@ -11,11 +11,20 @@
         <string>__SCRIPT_PATH__</string>
     </array>
 
-    <!-- Check every 4 hours and at login. The script itself decides whether
-         20+ hours have passed, so the real update happens about once a day,
-         shortly after the Mac wakes if it was asleep or off. -->
-    <key>StartInterval</key>
-    <integer>14400</integer>
+    <!-- Check in at the top of every hour and at login. The script itself
+         decides whether 20+ hours have passed, so the real update happens
+         about once a day.
+
+         This uses StartCalendarInterval, not StartInterval, on purpose:
+         launchd skips StartInterval firings that come due while the Mac is
+         asleep, but calendar firings missed during sleep are coalesced into
+         one run as soon as the Mac wakes. A dict with only Minute means
+         "every hour at that minute". -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
 
     <key>RunAtLoad</key>
     <true/>

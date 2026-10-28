@@ -6,9 +6,11 @@ A small macOS utility that keeps everything installed through Homebrew up to dat
 
 ## How the "at least once a day" part works
 
-A plain daily schedule has a weakness on a laptop: if the lid is closed or the Mac is off at the scheduled time, that day's run is simply missed. Instead, a launchd agent checks in every four hours and at login, and the script only does real work when its last successful run is more than 20 hours old. In practice you get one update per day, and if your Mac was asleep all day, the update happens shortly after you open the lid rather than waiting until tomorrow.
+A plain daily schedule has a weakness on a laptop: if the lid is closed or the Mac is off at the scheduled time, that day's run is simply missed. Instead, a launchd agent checks in at the top of every hour and at login, and the script only does real work when its last successful run is more than 20 hours old. Most check-ins exit in milliseconds. In practice you get one update per day, and if your Mac was asleep all day, the update happens right after you open the lid rather than waiting until tomorrow.
 
-The script also skips quietly when there's no network, uses a lock so two runs never overlap, and runs at low CPU and disk priority so you won't notice while you work.
+The agent uses `StartCalendarInterval` rather than `StartInterval`, and the difference matters on a laptop. launchd skips `StartInterval` firings that come due while the Mac is asleep, so an "every four hours" timer can go most of a day without firing. Calendar firings missed during sleep are coalesced into a single run when the Mac wakes, which is exactly the catch-up behavior this tool depends on.
+
+The script also skips quietly when there's no network, uses a lock so two runs never overlap, and runs at low CPU and disk priority so you won't notice while you work. Every check-in, quiet or not, writes one line to `~/Library/Logs/brew-daily-update/heartbeat.log`, so you can always tell whether the agent is waiting or stuck.
 
 ## Install
 
@@ -23,8 +25,9 @@ The installer copies the script to `~/.local/bin/brew-daily-update`, writes the 
 
 ```bash
 brew-daily-update --force    # update right now, ignoring the 20 hour gate
-brew-daily-update --status   # when did it last succeed?
+brew-daily-update --status   # last success, when the next update is due, recent check-ins
 tail -f ~/Library/Logs/brew-daily-update/$(date +%Y-%m-%d).log
+cat ~/Library/Logs/brew-daily-update/heartbeat.log          # every check-in, including quiet ones
 launchctl print gui/$(id -u)/com.sbek.brew-daily-update   # agent details
 ```
 
